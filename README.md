@@ -1,16 +1,53 @@
-# flutter_futurebuilder_widget
+# Flutter Futurebuilder Widget
 
-A new Flutter project.
 
-## Getting Started
+```dart
+import 'package:flutter/material.dart';
 
-This project is a starting point for a Flutter application.
+void main() {
+  runApp(MyApp());
+}
 
-A few resources to get you started if this is your first Flutter project:
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('FutureBuilder Example'),
+        ),
+        body: MyFutureBuilderWidget(),
+      ),
+    );
+  }
+}
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+class MyFutureBuilderWidget extends StatelessWidget {
+  Future<String> fetchData() async {
+    // Simulating an asynchronous operation, e.g., fetching data from an API
+    await Future.delayed(Duration(seconds: 2));
+    return "Hello, FutureBuilder!";
+  }
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text('Press button to start.');
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Text('Awaiting result...');
+          case ConnectionState.done:
+            if (snapshot.hasError)
+              return Text('Error: ${snapshot.error}');
+            return Text('Result: ${snapshot.data}');
+        }
+      },
+    );
+  }
+}
+```
+
